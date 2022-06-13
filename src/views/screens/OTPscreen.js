@@ -3,6 +3,7 @@ import {Image,Text,View,SafeAreaView,TouchableOpacity,StyleSheet,TextInput } fro
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AuthContext } from '../../../AuthContext';
 import OTPInputView from '@twotalltotems/react-native-otp-input'
+import BASEURL from '../../config'
 export default function VerifyOTP(props) {
     const [data, setData] = useState('')
     const [resetOTP, setresetOTP] = useState('')
@@ -15,7 +16,7 @@ console.log(name,phone,password)
    
       console.log(resetOTP)
       console.log(email)
-       fetch (`http://demo.foodduke.com/public/api/verify-password-reset-otp`,
+       fetch (`${BASEURL}/public/api/verify-password-reset-otp`,
        {
            method:'POST',
            headers: {

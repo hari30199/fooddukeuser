@@ -7,7 +7,7 @@ import {  Overlay } from 'react-native-elements';
 import RazorpayCheckout from 'react-native-razorpay';
 import { isLoading } from 'expo-font';
 import Delivery from './ManageAddress';
-
+import BASEURL from '../../config'
 
 export default function OrderConfirm (props) {
   const [Loading, setLoading] = useState(true);
@@ -74,7 +74,7 @@ export default function OrderConfirm (props) {
     console.log(id)
     console.log(name)
     console.log(location)
-    fetch('https://demo.foodduke.com/public/api/place-order',{
+    fetch(`${BASEURL}/public/api/place-order`,{
       method:'POST',
       headers: {
         'Content-Type': 'application/json',

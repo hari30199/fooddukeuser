@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from '@react-navigation/native';
-
+import BASEURL from '../../config'
 const Item = ({ name, image,slug,id}) => {
   const navigation = useNavigation();
  
@@ -26,7 +26,7 @@ const Item = ({ name, image,slug,id}) => {
     <View style={{flexDirection:'row'}}>
     <Image style={{width:'26%',height:66, justifyContent:"center",borderRadius:20}}
     source={{
-      uri: `http://demo.foodduke.com${image}`
+      uri: `${BASEURL}/${image}`
       }}></Image>
     <Text style={styles.title}>{name}</Text>
     </View>

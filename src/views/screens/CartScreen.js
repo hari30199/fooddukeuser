@@ -11,6 +11,10 @@ import { useIsFocused } from '@react-navigation/native';
 // import  MaterialIcons  from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import  FontAwesome  from 'react-native-vector-icons/FontAwesome';
+import BASEURL from '../../config'
+import { useKeyboard } from '@react-native-community/hooks';
+
+
 export default function App (props) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -35,6 +39,8 @@ export default function App (props) {
   const [visible, setVisible] = useState(false);
   const [myloc,setmyloc] = useState("");
   const [myloct,setmyloct] = useState("");
+  const keyboard = useKeyboard()
+  const showkeyboard = keyboard.keyboardShown
   const toggleOverlay = () => {
     setVisible(!visible);
   };
@@ -88,14 +94,14 @@ console.log('error',e)
 useEffect(() => {
  isFocused ? (retrieveData()):(retrieveData())
   }, [myloct,isFocused])
-  console.log(myloc,myloct)
+  // console.log(myloc,myloct)
  useEffect(() => {
-  isFocused ? (cartlist(),console.log('hello')):(cartlist())
+  isFocused ? (cartlist()):(cartlist())
   }, [isFocused,size])
 
   const cartlist = () => {
  
-    fetch(`https://demo.foodduke.com/public/api/cart-list`,{
+    fetch(`${BASEURL}/public/api/cart-list`,{
       method:'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -119,12 +125,12 @@ useEffect(() => {
    },[])
 
 var size = Object.values(cart_list).length;
-//  console.log(size); 
+ console.log(user_id); 
             // -------------ADD TO CART API-------------  //
            
               var check = 0;  
          const addtocart = (item_id,id,action) => {
-          console.log(item_id)
+          // console.log(item_id)
           const itemid = item_id
           const restaurant_id = id
           const user_id = userInfo.id
@@ -141,7 +147,7 @@ var size = Object.values(cart_list).length;
             if ( quantity  == 0 )
              removefromcart(item_id)
              else
-          fetch(`https://demo.foodduke.com/public/api/add-cart` ,
+          fetch(`${BASEURL}/public/api/add-cart` ,
           {
             method: 'POST', 
                  
@@ -184,7 +190,7 @@ var size = Object.values(cart_list).length;
     const itemid = item_id
     const user_id = userInfo.id
   
-      fetch(`https://demo.foodduke.com/public/api/remove-cart`,{
+      fetch(`${BASEURL}/public/api/remove-cart`,{
       method:'POST',
       headers: {
         "content-type": "application/json",
@@ -219,13 +225,16 @@ var size = Object.values(cart_list).length;
  const gettotalpayamount = () =>{
   var totalamount = 0
     var i =0
+    const deliverycharge = count == 'Delivery' ? cart_list[i]?.restaurant?.delivery_charges :'0'
+    console.log(deliverycharge)
       for (i=0;i<cart_list.length; i++)
       {
-      totalamount = gettotalamount()+","+(cart_list[i].restaurant.delivery_charges)+","+cart_list[i].restaurant.restaurant_charges;
+      totalamount = Number(gettotalamount())+Number(deliverycharge)+Number(cart_list[i].restaurant.restaurant_charges);
       }
       return totalamount;
+      
 } 
-
+console.log(gettotalpayamount())
 const getvalue = () =>{
   gettotalpayamount();
   return gettotalamount();
@@ -233,8 +242,8 @@ const getvalue = () =>{
 const Applycoupon = () => {
   // const  restaurant_id = id
 
-  console.log('coupon',coupon,getvalue())
-  fetch('https://demo.foodduke.com/public/api/apply-coupon',{
+  // console.log('coupon',coupon,getvalue())
+  fetch(`${BASEURL}/public/api/apply-coupon`,{
     method:'POST',
     headers: {
       'Accept': '*/*',
@@ -252,12 +261,54 @@ const Applycoupon = () => {
     .then((appcoupon) => JSON.stringify(appcoupon))
     .catch((error) => console.error(error))
     .finally(() => setLoading(false));
-    console.log(appcoupon)
+    // console.log(appcoupon)
  
 }
 //  if ( appcoupon.success != false )
 //   return setcouponerror('Invalid Coupon')
+useEffect(()=>{
+  isFocused ? (getorders()):(getorders())
+  },[isFocused])
+
+const getorders = () => {
+      
+  fetch(`${BASEURL}/public/api/get-orders` ,
   
+    {
+      method: 'POST', 
+           
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({
+              "token":token,
+              "user_id": user_id,
+            })
+          })
+        
+          .then((response) => response.json())
+          .then((json) => setData(json.data))
+          .then((data) => JSON.stringify(data.data))
+          .catch((error) => console.error(error))
+          .finally(() => setLoading(false));
+           console.log('my orders',data[0]?.orderstatus_id)
+      
+}
+
+
+const addons = ()=>{
+  var a = 0
+  const views = [];
+   for (a=0;a<data?.length;a++){
+    views.push(
+    data[a]?.orderstatus_id
+      )
+   }  return views
+
+   
+}     
+// console.log(addons())
+ 
 
 const i =0
   return (
@@ -319,7 +370,7 @@ const i =0
   size == 0 ? (
     <View style={{backgroundColor:'white',flex:1}}>
   <Image
-  style={{width:'100%',height:'75%'}} source={{uri:'https://demo.foodduke.com/assets/img/various/cart-empty.png'}}
+  style={{width:'100%',height:'75%'}} source={{uri:`${BASEURL}/assets/img/various/cart-empty.png`}}
   ></Image>
        <Text style={{textAlign:'center',fontSize:20,color:'orange',fontStyle:'FontAwesome5_Solid',fontWeight:'700'}} >No items in Cart</Text>
     </View>
@@ -356,7 +407,7 @@ const i =0
                   <Image
                   style={{ width: 100, height: 100, resizeMode: 'contain', justifyContent:"center",borderRadius:2}}
                   source={{
-                    uri: `https://demo.foodduke.com${item.restaurant.image}`
+                    uri: `${BASEURL}/${item.restaurant.image}`
                   }}
                   >
                   
@@ -396,7 +447,7 @@ const i =0
                    <Image 
                       style={{ width: 46, height: 50,}}
                       source={{
-                        uri:`https://demo.foodduke.com/assets/img/various/home-delivery.png`
+                        uri:`${BASEURL}/assets/img/various/home-delivery.png`
                       }}></Image>
                     <Text style={{top:4, right:10,fontFamily:'FontAwesome',color:'black'}}>   Delivery</Text>
                      </TouchableOpacity>
@@ -404,7 +455,7 @@ const i =0
                          <Image 
                       style={{ width: 46, height: 50,left:16}}
                       source={{
-                        uri:`https://demo.foodduke.com/assets/img/various/self-pickup.png`
+                        uri:`${BASEURL}/assets/img/various/self-pickup.png`
                       }}></Image>
                         <Text style={{top:4, right:10,fontFamily:'FontAwesome',color:'black',left:4}}>Self Pickup</Text>
                      </TouchableOpacity>
@@ -501,7 +552,10 @@ const i =0
                  </TouchableOpacity>
            </View>
             <View>
-              <TouchableOpacity onPressIn={()=> navigation.navigate ('Login')}>
+            <TouchableOpacity  
+        onPress={() =>navigation.navigate('AccountScreen',{
+          fromcart : 3006
+        })}>
               <Text  style={{textAlign:'center',top:25}}><Ionicons name='md-alert-circle-outline' size={16}/> Login to apply coupon</Text>
               </TouchableOpacity>
              
@@ -543,6 +597,17 @@ const i =0
             {/* //  --------Bill details---------  // */}
             <View style={{height:userinfo.auth_token ? (700):(630)}}>
             <View style={styles.bill}>
+              {userInfo.id  && addons != '6' && addons != '5'  ? (
+                  <TouchableOpacity onPress={()=>navigation.navigate('Myorders')}>
+                  <View style={{height:30,backgroundColor:'#282c3f',borderTopLeftRadius:4,borderTopRightRadius:4,justifyContent:'center'}}>
+                    <Text style={{color:'white',textAlign:'center'}}>You have some on-going orders.VIEW {'>'}</Text>
+                    </View>
+                  </TouchableOpacity>
+              ):(
+                  <Text style ={{height:0}}></Text>
+              )}
+            
+             
            <Text style={styles.billheading}>BILL DETAILS</Text>
            <View style={{top:30,left:16}}>
            <FlatList
@@ -553,7 +618,7 @@ const i =0
               <View style={{width:'80%'}}>
                  <Text style={styles.billdetails}> Item  Total</Text>
                  <Text style={styles.billdetails}> Restaurant  charges</Text>
-                 {count != 'delivery' ? (
+                 {count != 'Delivery' ? (
                      <Text style={{height:0}}></Text>
                  ):(
                   <Text style={styles.billdetails}> Delivery  charges</Text>
@@ -574,17 +639,17 @@ const i =0
                  <Text style={styles.billdetailspay}> To Pay</Text>
                  {/* <Text style={{fontSize:18,color:'red',fontWeight:'500'}}> You have selected {count}</Text> */}
               </View>
-                <View style={{right:24}} >
+                <View style={{right:24,width:300}} >
                   <View style={{flexDirection:'row'}}>
                   
                       <Text style={[styles.billdetails,{ width:58}]}><Image style={{ width:10, height: 10,}} source={require('../../assets/rupee.png')}></Image> {gettotalamount()}</Text>
                   </View>
               
-                 <Text style={[styles.billdetails,{ width:56}]}><Image style={{ width:10, height: 10}}source={require('../../assets/rupee.png')}></Image> {item.restaurant_charge == null ? '0.000' :item.restaurant_charge}</Text>
-                 {count != 'delivery' ? (
+                 <Text style={[styles.billdetails,{ width:76}]}><Image style={{ width:10, height: 10}}source={require('../../assets/rupee.png')}></Image> {item.restaurant.restaurant_charges == null ? '0.00' : item.restaurant.restaurant_charges}</Text>
+                 {count != 'Delivery' ? (
                      <Text style={{height:0}}></Text>
                  ):(
-                  <Text style={[styles.billdetails,{ width:46}]}>{item.restaurant.delivery_charges}</Text>
+                  <Text style={[styles.billdetails,{ width:76}]}><Image style={{ width:10, height: 10}}source={require('../../assets/rupee.png')}></Image> {item.restaurant.delivery_charges == null ? '0.00' : item.restaurant.delivery_charges}</Text>
                  )}
                  {appcoupon.success == true ? (
               <Text style={[styles.billdetails,{ width:58,color:'red'}]}> <FontAwesome name="rupee" size={13} style={{left:4}} /> {appcoupon.applied_details.discounted_amount} - </Text>
@@ -592,7 +657,7 @@ const i =0
                   <Text></Text>
                  )}
                  
-                 <Text style={styles.billtotal}><Image style={{ width:10, height: 10,top:5,right:6}}source={require('../../assets/rupee.png')}></Image>{appcoupon.success == true ? `${appcoupon.applied_details.final_total}`: `${getvalue()}`}</Text>
+                 <Text style={styles.billtotal}><Image style={{ width:10, height: 10,top:5,right:6}}source={require('../../assets/rupee.png')}></Image> {appcoupon.success == true ? `${appcoupon.applied_details.final_total}`: `${gettotalpayamount()}`}</Text>
                  {/* <Text style={styles.billtotal}><Image style={{ width:10, height: 10,top:5,right:6}}source={require('../../assets/rupee.png')}></Image>{appcoupon.applied_details.final_total} {getvalue()}</Text> */}
                 </View>
                
@@ -616,90 +681,94 @@ const i =0
 
   {/* fill space at the bottom*/}
   <View style={{ justifyContent: 'flex-end',height:10 }} />
-  { userInfo.auth_token?
-      ( 
-          <View style={[styles.bottomView,{ padding:10}]}>
-            { count == 'Delivery' ? (
-              <View style={{backgroundColor:'white',width:'106%',bottom:10,height:150}}>
-                <View style={{flexDirection:'row',justifyContent:'space-between',top:10}}>
-                <Text style={{color:'black',fontSize:16,padding:10,fontFamily:'FontAwesome5_Solid'}}>DELIEVER TO</Text> 
-                <TouchableOpacity onPress={
-          () => navigation.navigate('LocationView')}>
-                <Text style={{color:'orange',right:14,top:5,borderRadius:3,textAlign:'center', 
-                paddingLeft:8,paddingRight:6,
-                borderWidth:0.3,borderColor:'grey',height:25,paddingTop:5,fontFamily:'FontAwesome5_Solid',backgroundColor:"#f3f3f3"}}>CHANGE</Text>
-                </TouchableOpacity>            
-                </View>
+  {showkeyboard == true ? <Text style={{height:0}}></Text> :
+  userInfo.auth_token?
+    ( 
+        <View style={[styles.bottomView,{ padding:10}]}>
+          { count == 'Delivery' ? (
+            <View style={{backgroundColor:'white',width:'106%',bottom:10,height:150}}>
+              <View style={{flexDirection:'row',justifyContent:'space-between',top:10}}>
+              <Text style={{color:'black',fontSize:16,padding:10,fontFamily:'FontAwesome5_Solid'}}>DELIEVER TO</Text> 
+              <TouchableOpacity onPress={
+        () => navigation.navigate('LocationView')}>
+              <Text style={{color:'orange',right:14,top:5,borderRadius:3,textAlign:'center', 
+              paddingLeft:8,paddingRight:6,
+              borderWidth:0.3,borderColor:'grey',height:25,paddingTop:5,fontFamily:'FontAwesome5_Solid',backgroundColor:"#f3f3f3"}}>CHANGE</Text>
+              </TouchableOpacity>            
+              </View>
+             
+              <Text style={{width:100,top:20}}>{(userinfo[i] == null && userinfo[i] == undefined) ? ( 
+      <TouchableOpacity onPress={
+        () => navigation.navigate('LocationView')}>
+        <Text>   {mylocation}</Text>
+        
+      </TouchableOpacity>
+      
+    ):(
+        <View>
+        {/* <Text style={{padding:5,width:'60%',top:10}}>{Object.values(userinfo[i].latitude)}</Text> */}
+        <Text style={{padding:5,width:'60%',top:10}}>{Object.values(userinfo[i].address)}</Text>
+      </View>
+      
+    )}</Text>
+              <TouchableOpacity style={{bottom
+              :10}}
+                          onPress={() =>
+                            navigation.navigate('PaymentScreen', {
+                                  topay: gettotalpayamount(),
+                                  quantity: getcartqty(),
+                                  deliverytype : count,
+                                  address:mylocation,
+                                  couponname : coupon,
+                                  lat : myloc,
+                                  long : myloct,
+                                  
+                              })
+                          }
+            >
+              <View style={{textAlign:'center',height:58,
+              justifyContent:'center',backgroundColor:'orange',top:45}}>
+              
+               <Text style={{fontSize:20,color:'white',
+                 width:'100%',textAlign:'center',
+                 fontFamily:'FontAwesome5_Solid'}}>Proceed to checkout</Text>
                
-                <Text style={{width:100,top:20}}>{(userinfo[i] == null && userinfo[i] == undefined) ? ( 
-        <TouchableOpacity onPress={
-          () => navigation.navigate('LocationView')}>
-          <Text>   {mylocation}</Text>
-          
+              </View>
+              </TouchableOpacity>
+              </View>
+          ) : (
+            <TouchableOpacity style={styles.bottomview}
+            onPress={() =>
+              navigation.navigate('PaymentScreen', {
+                    topay: gettotalpayamount(),
+                    quantity: getcartqty(),
+                    deliverytype : count
+                })}>
+              <View style={{flexDirection:'row',textAlign:'center',justifyContent:'center',top:8}}>
+               <Text style={{color:'white',fontSize:20,textAlign:'center',fontFamily:'FontAwesome5_Solid',fontWeight:'bold',padding:8}}>Proceed to checkout</Text>
+              </View>
+              </TouchableOpacity>
+          )}
+        
+      </View>
+    ):(
+      
+        <View style={styles.bottomViewlogin}>
+        <TouchableOpacity  
+        onPress={() =>navigation.navigate('AccountScreen',{
+          fromcart : 3006
+        })}>
+        <View style={{flexDirection:'row',
+        textAlign:'center',
+        justifyContent:'center',
+        padding:20,fontSize:20,fontFamily:'FontAwesome5_Solid'}}>
+         <Text>LOGIN TO CONTINUE</Text>
+        </View>
         </TouchableOpacity>
-        
-      ):(
-          <View>
-          <Text style={{padding:5,width:'60%',top:10}}>{Object.values(userinfo[i].latitude)}</Text>
-          {/* <Text style={{padding:5,width:'60%',top:10}}>{Object.values(userinfo[i].address)}</Text> */}
-        </View>
-        
-      )}</Text>
-                <TouchableOpacity style={{bottom
-                :10}}
-                            onPress={() =>
-                              navigation.navigate('PaymentScreen', {
-                                    topay: gettotalpayamount(),
-                                    quantity: getcartqty(),
-                                    deliverytype : count,
-                                    address:mylocation,
-                                    couponname : coupon,
-                                    lat : myloc,
-                                    long : myloct
-                                })
-                            }
-              >
-                <View style={{textAlign:'center',height:58,
-                justifyContent:'center',backgroundColor:'orange',top:50}}>
-                
-                 <Text style={{fontSize:20,color:'white',
-                   width:'100%',textAlign:'center',
-                   fontFamily:'FontAwesome5_Solid'}}>Proceed to checkout</Text>
-                 
-                </View>
-                </TouchableOpacity>
-                </View>
-            ) : (
-              <TouchableOpacity style={styles.bottomview}
-              onPress={() =>
-                navigation.navigate('PaymentScreen', {
-                      topay: gettotalpayamount(),
-                      quantity: getcartqty(),
-                      deliverytype : count
-                  })}>
-                <View style={{flexDirection:'row',textAlign:'center',justifyContent:'center',top:8}}>
-                 <Text style={{color:'white',fontSize:20,textAlign:'center',fontFamily:'FontAwesome5_Solid',fontWeight:'bold',padding:8}}>Proceed to checkout</Text>
-                </View>
-                </TouchableOpacity>
-            )}
-          
-        </View>
-      ):(
-        
-          <View style={styles.bottomViewlogin}>
-          <TouchableOpacity  
-          onPress={() =>navigation.navigate('Login')}>
-          <View style={{flexDirection:'row',
-          textAlign:'center',
-          justifyContent:'center',
-          padding:20,fontSize:20,fontFamily:'FontAwesome5_Solid'}}>
-           <Text>LOGIN TO CONTINUE</Text>
-          </View>
-          </TouchableOpacity>
-      
-        </View>
-      
-      )}
+    
+      </View>
+
+    )}
 </View>
  )
  )
@@ -784,7 +853,7 @@ const styles = StyleSheet.create ({
     },
     billheading:{
       left:20,
-      top:20,
+      top:16,
       width:'88%',
       color:'black',
       borderBottomColor:'#57575730',

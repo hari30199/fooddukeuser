@@ -15,7 +15,6 @@ const handleLikeAnimation = () => {
     useNativeDriver: true,
   }).start();
 };
-
   return (
     <SafeAreaView style={{flex:1}} >
       <View style={{backgroundColor:'white',flexDirection:'row',height:50}}>
@@ -49,3 +48,92 @@ const styles = StyleSheet.create({
 
 export default App;
 
+// import React, { useEffect, useState,useContext } from 'react';
+// import {  TouchableOpacity, View, StyleSheet,Image,Text} from "react-native";
+// import Swiper,{Autoplay} from "react-native-web-swiper";
+// import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+// import {FlatListSlider} from 'react-native-flatlist-slider';
+// import BASEURL from '../../config'
+// export default function Trending() {
+//   const [isLoading, setLoading] = useState(true);
+//   const [data, setData] = useState([]);
+
+//   useEffect(() => {
+    
+//   fetch(`${BASEURL}/public/api/promo-slider`,{
+//     method: 'POST', 
+         
+//     headers: {
+//       'Accept': '*/*',
+//       'Content-Type': 'application/json',
+//   },
+//   body: JSON.stringify()
+//   })
+  
+//     .then((response) =>(response.json()))
+//     .then((result) => {
+//       // console.log(result.mainSlides[0].data)
+//       var i=0
+//       for ( i=0; i<result.mainSlides.length; i++)
+//       setData(result.mainSlides);
+      
+//     })
+//     .catch((error) => console.error(error))
+//     .finally(() => setLoading(false));
+   
+// }, []);
+// const images = [
+//   {
+//    image:`${BASEURL}/${data.image}`,
+  
+//   },
+//  ]
+
+//  const slider = (i) =>{
+//   var i= 0 
+//   const views = [];
+//   for (i=0; i<data.length;i++){
+//     views.push(
+      
+//       <FlatListSlider
+//       data={`${BASEURL}/${data[i].data.image}`}
+//       height={240}
+//       timer={5000}
+//       onPress={item => alert(JSON.stringify(item))}
+//       // contentContainerStyle={{paddingHorizontal: 16}}
+//       // indicatorContainerStyle={{position:'absolute', bottom: 20}}
+//       indicatorActiveColor={'orange'}
+//       indicatorInActiveColor={'#ffffff'}
+//       indicator={true}
+//       indicatorActiveWidth={24}
+//       animation
+//      />
+//     )
+//   }
+//   return views
+// }   
+
+
+// // const img = `${BASEURL}/${data[i].data.image}`
+  
+
+//         return (
+//           isLoading ? <View>
+//             <SkeletonPlaceholder>
+//               <View style={{width:'100%',height:200}}></View>
+//             </SkeletonPlaceholder>
+//           </View>:
+//         <View style={styles.categorie} >
+                  
+//                      {slider()}
+//                </View>
+   
+      
+//         );
+//     }
+//     const styles = StyleSheet.create({
+//         categorie:{
+//             width:"100%",
+//             right:8
+//         }
+//     });

@@ -1,11 +1,12 @@
 import React,{useEffect} from "react";
 import { StyleSheet, TextInput, View,Text, Keyboard, Button, Touchable } from "react-native";
-import { Feather, Entypo } from "@expo/vector-icons";
+import  Entypo  from "react-native-vector-icons/Entypo";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useIsFocused  } from '@react-navigation/native';
+import { useIsFocused,useNavigation  } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const SearchBar = (props) => {
+  const navigation = useNavigation()
   const isFocused = useIsFocused();
   useEffect(()=>{
     isFocused ? (!Keyboard.dismiss()):('SearchBar.show')
@@ -33,6 +34,14 @@ const SearchBar = (props) => {
           onFocus={() => {
             props.setClicked(true);
           }}
+          ref={(ref) => {
+
+            if( ref !== undefined && ref && !ref.isFocused() ){
+
+                ref.focus();
+            }
+        }}
+          autoFocus={false}
         />
         
         {props.clicked && (
@@ -45,8 +54,7 @@ const SearchBar = (props) => {
       {props.clicked && (
         <View>
           <TouchableOpacity  onPress={() => {
-              Keyboard.dismiss();
-              props.setClicked(false);
+             navigation.navigate('Near Me')
             }}>
             <Text style={{fontSize:20,
               backgroundColor:'white',

@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { SvgUri } from 'react-native-svg';
 import LottieView from 'lottie-react-native';
-
+import BASEURL from '../../config'
 const wait = (timeout) => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 }
@@ -16,6 +16,7 @@ const wait = (timeout) => {
     const [data, setData] = useState([]);
     const [result, setresult] = useState([]);
     const [isLoading, setLoading] = useState(true);
+    const [count, setcount] = useState(1);
     const {userInfo} = useContext(AuthContext);
     const navigation = useNavigation();
     const [refreshing, setRefreshing] = React.useState(false);
@@ -36,10 +37,10 @@ const wait = (timeout) => {
     
     const token = userInfo.auth_token
     const user_id = userInfo.id
-
+    console.log(token,user_id)
     const getorders = () => {
       
-        fetch(`https://demo.foodduke.com/public/api/get-orders` ,
+        fetch(`${BASEURL}/public/api/get-orders?page=${count}` ,
         
           {
             method: 'POST', 
@@ -68,7 +69,7 @@ const wait = (timeout) => {
               const Cancelorder = (id) =>{
               const orderid = id
               console.log(orderid)
-                fetch(`https://demo.foodduke.com/public/api/cancel-order` ,
+                fetch(`${BASEURL}/public/api/cancel-order` ,
                 
                   {
                     method: 'POST', 
@@ -121,7 +122,7 @@ const wait = (timeout) => {
     //  return console.log(i)
    }   
    
-
+console.log(count)
 
    const ItemDivider = () => {
     return (
@@ -187,6 +188,34 @@ const wait = (timeout) => {
               data={data.data}
               keyExtractor={({ id }, index) => id}
               ItemSeparatorComponent={ItemDivide}
+              ListFooterComponent={
+                <View style={{flexDirection:'row',justifyContent:'space-around',borderTopWidth:0.3,borderTopColor:"#57575730",paddingBottom:8,paddingTop:8}}>
+      {data.current_page != 1 ? (
+         <TouchableOpacity style={styles.pagebutton} onPress={()=>{getorders(),setcount(count-1),setLoading(true)}}>
+         <Text style={{color:'black'}}> {'<'} </Text>
+         </TouchableOpacity>
+      ):(
+         <Text style={{width:0,height:0}}></Text>
+      )}
+       {data.current_page != data.last_page ? (
+         <View style={{flexDirection:'row',top:5}}>
+       <Text style={{right:20,color:'orange'}}>       {data.current_page}.......</Text>
+       <TouchableOpacity onPress={()=>{getorders(),setcount(data.last_page),setLoading(true)}}>
+       <Text style={{right:16,color:'orange'}}>{data.last_page}</Text>
+       </TouchableOpacity>
+      </View>
+       ) :(
+       <TouchableOpacity style={{alignItems:'center'}} onPress={()=>{getorders(),setcount(data.last_page),setLoading(true)}}>
+         <Text style={{top:5,color:'orange'}}>{data.last_page}</Text>
+         </TouchableOpacity>)}
+      
+   <TouchableOpacity style={styles.pagebutton} onPress={()=>{getorders(),setcount(count+1),setLoading(true)}}>
+   <Text style={{color:'black'}}> {'>'} </Text>
+   </TouchableOpacity>
+      
+    </View>
+           
+            }
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -298,19 +327,35 @@ const wait = (timeout) => {
                      )}
                      
                     </View>
+                    
                     {/* <FlatList
                      data={data.data}
                      keyExtractor={({ id }, index) => id.tostring}
                      renderItem={_renderItem}/> */}
                 </View> 
+              
               )}
             />
                </View>
     )}
-    
-    </View>
-    )
+     <View>
+       {/* <View style={{flexDirection:'row'}}>
+         <Text style={{top:5}}>      Pages:   </Text>
+         <TouchableOpacity style={styles.pagebutton} onPress={()=>{getorders(),setcount(count-1),setLoading(true)}}>
+         <Text style={{color:'black'}}> {'<'} </Text>
+         </TouchableOpacity>
+         <Text style={{color:'orange',top:5}}>   {data.current_page}   </Text>
+       <TouchableOpacity style={styles.pagebutton} onPress={()=>{getorders(),setcount(count+1),setLoading(true)}}>
+   <Text style={{color:'black'}}> {'>'} </Text>
+   </TouchableOpacity>
+       </View> */}
+
+     </View>
       
+    </View>
+     
+    )
+   
     
   );
 };
@@ -362,6 +407,11 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     justifyContent:'space-between',
     padding:6
+  },
+  pagebutton:{
+    borderWidth:0.3,
+    padding:4,
+    
   }
   
 });

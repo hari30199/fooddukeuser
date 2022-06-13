@@ -6,6 +6,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { AuthContext } from '../../../AuthContext';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import BASEURL from '../../config'
+
+
 const Featured = () => {
   const [Loading,setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -50,7 +53,7 @@ const retrieveData = async () => {
   const long =userinfo[i] == null && userinfo[i] == undefined ? (77.5871):((userinfo[0].longitude))
 
   const oflinedata = () =>{
-    fetch(`http://demo.foodduke.com/public/api/get-selfpickup-restaurants?latitude=${myloct}&longitude=${myloc}` ,
+    fetch(`${BASEURL}/public/api/get-selfpickup-restaurants?latitude=${myloct}&longitude=${myloc}` ,
     {
       method: 'POST', 
            
@@ -69,7 +72,7 @@ const retrieveData = async () => {
   }
   
   const fetchData =  () => {
-      fetch(`http://demo.foodduke.com/public/api/get-selfpickup-restaurants?latitude=${lat}&longitude=${long}` ,
+      fetch(`${BASEURL}/public/api/get-selfpickup-restaurants?latitude=${lat}&longitude=${long}` ,
     {
       method: 'POST', 
            
@@ -178,7 +181,7 @@ const retrieveData = async () => {
 <ImageBackground 
 style={{ width: '100%', height: 88,justifyContent:"center",borderRadius:20}}
 source={{
-  uri: `http://demo.foodduke.com${item.image}`
+  uri: `${BASEURL}/${item.image}`
 }}
 >
 

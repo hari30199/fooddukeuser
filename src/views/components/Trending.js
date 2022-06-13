@@ -1,7 +1,7 @@
 import React from "react";
 import {  TouchableOpacity, View, StyleSheet,Image} from "react-native";
 import Swiper from "react-native-web-swiper";
-
+import BASEURL from '../../config'
 export default function Trending() {
    
         return (

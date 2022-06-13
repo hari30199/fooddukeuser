@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AuthContext } from '../../../AuthContext';
 import  CheckBox  from '@react-native-community/checkbox';
 import { Card } from 'react-native-paper';
-
+import BASEURL from '../../config'
 
 const data = [
     { id: 1, txt: 'I want to change myphone number', isChecked: false },
@@ -82,7 +82,7 @@ export default function CancelOrder (props) {
         if (selected[0].txt == '')
         return 
         else
-          fetch(`https://demo.foodduke.com/public/api/cancel-order` ,
+          fetch(`${BASEURL}/public/api/cancel-order` ,
           
             {
               method: 'POST', 

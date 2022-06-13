@@ -2,7 +2,7 @@ import React,{useState,useContext,useEffect} from 'react';
 import {Image,Text,View,SafeAreaView,StyleSheet, Alert} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import BASEURL from '../../config'
 export default function VerifyOTP(props) {
 
   const [data, setData] = useState([]);
@@ -30,7 +30,7 @@ export default function VerifyOTP(props) {
        console.log(otp)
        console.log(password)
 
-       fetch (`https://demo.foodduke.com/public/api/change-user-password`,
+       fetch (`${BASEURL}/public/api/change-user-password`,
        {
            method:'POST',
            headers: {

@@ -15,19 +15,20 @@ import {AuthProvider} from '../../../AuthContext';
 import SplashScreen from '../screens/SplashScreen';
 import SplasScreen from '../screens/SplashScreen';
 import { useIsFocused } from '@react-navigation/native';
+import { ConstantClass } from '../screens/Hotels/cartfind';
+import BASEURL from '../../config'
+
 const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
   const {userInfo,userinfo, splashLoading} = useContext(AuthContext);
-  const [data, setData] = useState([]);
-  const [result, setresult] = useState([]);
   const [cart_list,setcart_list] = useState([]);
   const isFocused = useIsFocused(); 
   const cartlist = () =>{
 
     const user_id = userInfo.id
     // console.log(user_id)
-      fetch(`https://demo.foodduke.com/public/api/cart-list`,{
+      fetch(`${BASEURL}/public/api/cart-list`,{
         method:'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +43,6 @@ const BottomNavigator = () => {
           
         })
         .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
        
     
   }
@@ -53,11 +53,13 @@ const BottomNavigator = () => {
    isFocused ?  cartlist():cartlist()
   },[size,isFocused])
  
-console.log(size)
+  ConstantClass.Email = global.MyVar
+
+console.log(ConstantClass.Email)
   return (
 
     <Tab.Navigator
-    
+    initialRouteName={ConstantClass.Email == 'somevalue' ? 'Cart':'Near Me'}
      keyboardHidesTabBar={true}
       screenOptions={{
         tabBarHideOnKeyboard:true,

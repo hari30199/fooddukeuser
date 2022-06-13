@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios'
 import { AuthContext } from '../../../AuthContext';
 import LocationView from './LocationView';
+import BASEURL from '../../config'
 const Delivery = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setdata] = useState([]);
@@ -16,7 +17,7 @@ const Delivery = () => {
   // console.log(token)
   
     let fetchData = async () => {
-      await fetch(`https://demo.foodduke.com/public/api/get-addresses?token=${token}&user_id=${user_id}`,{
+      await fetch(`${BASEURL}/public/api/get-addresses?token=${token}&user_id=${user_id}`,{
         method:'POST',
         headers: {
           'Content-Type': 
@@ -41,7 +42,7 @@ const Delivery = () => {
 
 const fetchdata = async () => {
   const response = await axios.post(
-    `https://demo.foodduke.com/public/api/delete-address?token=${token}&address_id=${450}`
+    `${BASEURL}/public/api/delete-address?token=${token}&address_id=${450}`
   );
 
   console.log(response.data)

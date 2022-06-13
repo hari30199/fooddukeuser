@@ -1,7 +1,7 @@
 import React,{useState,useContext,useEffect} from 'react';
 import {Image,Text,View,SafeAreaView,TouchableOpacity,StyleSheet,TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import BASEURL from '../../config'
 export default function VerifyOTP(props) {
  
   const [data, setData] = useState([]);
@@ -16,7 +16,7 @@ export default function VerifyOTP(props) {
      const code = resetOTP
       console.log(code)
       console.log(otpemail)
-       fetch (`http://demo.foodduke.com/public/api/verify-password-reset-otp`,
+       fetch (`${BASEURL}/public/api/verify-password-reset-otp`,
        {
            method:'POST',
            headers: {

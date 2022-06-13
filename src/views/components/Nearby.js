@@ -1,5 +1,5 @@
 import React, { useEffect, useState,useContext } from 'react';
-import { FlatList, Text, RefreshControl,View,StyleSheet,Image,ImageBackground } from 'react-native';
+import { FlatList, Text,VirtualizedList, RefreshControl,View,StyleSheet,Image,ImageBackground } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation, useIsFocused  } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -9,6 +9,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import Icon from 'react-native-vector-icons/Entypo';
 import  EvilIcons  from 'react-native-vector-icons/EvilIcons';
 import  AntDesign  from 'react-native-vector-icons/AntDesign';
+import BASEURL from '../../config'
 
 const delivery = () => {
   const [Loading, setLoading] = useState(true);
@@ -68,7 +69,7 @@ useEffect(() => {
     if (run == 1  && myloct != '' && myloc != '' ){
       
     // console.log('run1',run)
-    fetch(`https://demo.foodduke.com/public/api/get-delivery-restaurants?latitude=${myloct}&longitude=${myloc}` ,
+    fetch(`${BASEURL}/public/api/get-delivery-restaurants?latitude=${myloct}&longitude=${myloc}` ,
     {
       method: 'POST', 
            
@@ -86,7 +87,7 @@ useEffect(() => {
       // console.log(data)
       .then((response) =>(response.json()))
       .then((result) => {
-        // console.log('name',result.length)
+        console.log('name',result)
         // console.log('loaction',myloc,myloct)
 
          setData(result);
@@ -113,10 +114,10 @@ useEffect(() => {
     }
       
   }
-  
+
   const fetchData =  () => {
     if ( lat != '' && long != '' ){
-      fetch(`https://demo.foodduke.com/public/api/get-delivery-restaurants?latitude=${lat}&longitude=${long}` ,
+      fetch(`${BASEURL}/public/api/get-delivery-restaurants?latitude=${lat}&longitude=${long}` ,
     {
       method: 'POST', 
            
@@ -128,6 +129,7 @@ useEffect(() => {
     
           .then((response) =>(response.json()))
           .then((result) => {
+            // console.log('name',result[0].is_active)
             setData(result);
             
           })
@@ -144,6 +146,10 @@ useEffect(() => {
   {userInfo.id ? (
     useEffect(()=>{
     isFocused ? (fetchData()):(fetchData())
+
+    return () => {
+      setData({}); 
+    };
     },[isFocused,lat,long])
   ):(
     useEffect(()=>{
@@ -153,12 +159,16 @@ useEffect(() => {
     isFocused ? (oflinedata()):(oflinedata())
     // console.log('hotel',myloct,myloc)
   }
+  return () => {
+    setData({}); 
+  };
     },[isFocused,myloct,myloc])
     
   )}
   // Number of Hotels //
   var count = Object.keys(data). length;
-
+  
+  // console.log(data.name)
 
   return (
     
@@ -211,6 +221,7 @@ useEffect(() => {
         
           <FlatList
             data={data}
+            
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -236,15 +247,15 @@ useEffect(() => {
 <Image
 style={{ width: 100, height: 100, resizeMode: 'contain', justifyContent:"center",borderRadius:2}}
 source={{
-  uri: `http://demo.foodduke.com${item.image}`
+  uri: `${BASEURL}/${item.image}`
 }}
 >
 
 </Image>
 </View>
 <View style={styles.fhoteltitle} >
-
-  <Text style={styles.htitle} >{item.name}
+  
+  {/* <Text style={styles.htitle} >{item.name}
   {item.id == 7 ? (
     <View style={{flexDirection:'row',bottom:10,left:10}}>
     <View style={{left:14,zIndex:2,bottom:16}}>
@@ -254,10 +265,32 @@ source={{
    <Text style={{backgroundColor:'orange',height:23, color:'white',fontSize:14, width:100,textAlign:'right',bottom:10}}>
     Featured    </Text>
   </View>
+  // <Text >Featured</Text>
   ):(<Text></Text>)}
-  </Text>
+  </Text>  */}
+   <View style={{flexDirection:'row',width:'92%',height:40,justifyContent:'center',alignItems:'center'}}>
+     <View style={{width:item.is_featured == 1 ?'60%':'100%'}}>
+     <Text style={{fontWeight:"bold",
+              fontSize:16,
+              color:"black" ,
+              fontFamily:'FontAwesome' ,left:7}}>{item.name}</Text>
+     </View>
+     {item.is_featured == 1 ? (
+     <View style={{flexDirection:'row',width:'38%',alignItems:'flex-end'}}>
+    <View style={{left:12,zIndex:2,bottom:5}}>
+    <Icon name='arrow-right'color={'white'} size={34}></Icon>
+    </View>
+     
+   <Text style={{fontWeight:'bold', backgroundColor:'orange',height:23, color:'white',fontSize:14,textAlign:'right',bottom:10,right:3}}>    Featured  </Text>
+  </View>):(<Text></Text>)}
+   </View>
+
   
   <Text style={styles.hdes} numberOfLines={1}  >{item.description}</Text>
+  {item.is_active == 0?(<Text style={{height:16,fontSize:12,bottom:8,left:10,color:'red'}}><AntDesign name='exclamationcircle' size={12} color='red'/>  Not Accepting Orders</Text>):(<Text style={{height:0}}></Text>) }
+  
+
+ 
   <View style={styles.hdetails}  >
         <Icon size={15} style={{left:34,bottom:2}}
                     name ='star' color={'orange'} />
@@ -270,7 +303,7 @@ source={{
        <EvilIcons style={{bottom:3,left:3}} color='#565656' name='location' size={15}></EvilIcons>
        <Text adjustsFontSizeToFit={true}
        numberOfLines={1} minLength={2}
-       style={styles.hdist}> {item.distance}</Text>
+       style={styles.hdist}> {Math.round((item.distance + Number.EPSILON) * 100) / 100}</Text>
        <Text style={{left:1,bottom:4}}>km</Text>
        </View>
       <View style={styles.hprice} >
@@ -335,8 +368,8 @@ const styles = StyleSheet.create({
           },
           fhoteltitle:{
               width:"70%",
-              height:120, 
-              
+              height:200, 
+              // justifyContent:'space-evenly'
           },
           htitle:{
               marginTop:14,
@@ -344,7 +377,8 @@ const styles = StyleSheet.create({
               fontWeight:"bold",
               fontSize:16,
               color:"black" ,
-              fontFamily:'FontAwesome'   
+              fontFamily:'FontAwesome' ,
+              
           },
           hdes:{
               marginLeft:10,
@@ -352,10 +386,8 @@ const styles = StyleSheet.create({
               fontSize:12,
               marginTop:6,
               width:'80%' ,
-              paddingBottom:10,
+              // paddingBottom:8,
               height:26 ,
-              borderBottomColor: '#57575730',
-              borderBottomWidth: 0.3,
               fontFamily:'FontAwesome' ,
               
           },
@@ -368,7 +400,9 @@ const styles = StyleSheet.create({
               alignItems:'center',
               justifyContent:"center",
               // flexWrap:1
-              fontFamily:'FontAwesome' 
+              fontFamily:'FontAwesome' ,
+              borderTopColor: '#57575730',
+              borderTopWidth: 0.3,
           },
           hrate:{
               width:"28%",
@@ -384,7 +418,7 @@ const styles = StyleSheet.create({
               fontWeight:500
           },
           hdist:{
-              width:"34%",
+              width:"43%",
               height:18,
               alignItems:"center",
               flexDirection:"row",

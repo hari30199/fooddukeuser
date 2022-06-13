@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import  EvilIcons  from 'react-native-vector-icons/EvilIcons';
 import  AntDesign  from 'react-native-vector-icons/AntDesign';
+import BASEURL from '../../../config'
 
 const FiltersScreen = (props) => {
   const [Loading, setLoading] = useState(true);
@@ -74,7 +75,7 @@ const retrieveData = async () => {
     
  
 
-    fetch(`https://demo.foodduke.com/public/api/get-delivery-restaurants?latitude=${myloct}&longitude=${myloc}&category_ids=${itemsid}` ,
+    fetch(`${BASEURL}/public/api/get-delivery-restaurants?latitude=${myloct}&longitude=${myloc}&category_ids=${itemsid}` ,
     {
       method: 'POST', 
            
@@ -103,7 +104,7 @@ const retrieveData = async () => {
     }
    
     
-      fetch(`https://demo.foodduke.com/public/api/get-delivery-restaurants?latitude=${lat}&longitude=${long}&category_ids=${arr}` ,
+      fetch(`${BASEURL}/public/api/get-delivery-restaurants?latitude=${lat}&longitude=${long}&category_ids=${arr}` ,
     {
       method: 'POST', 
            
@@ -134,7 +135,7 @@ const retrieveData = async () => {
 
    const Filterbuttons = () =>{
   
-    fetch('https://demo.foodduke.com/public/api/get-menu-categories',{
+    fetch(`${BASEURL}/public/api/get-menu-categories`,{
       method:'POST',
       headers: {
         'Accept': '*/*',
@@ -295,7 +296,7 @@ useEffect(()=>{
 <ImageBackground 
 style={{ width: '94%', height: 66,justifyContent:"center",borderRadius:20}}
 source={{
-  uri: `https://demo.foodduke.com${item.image}`
+  uri: `${BASEURL}/${item.image}`
 }}
 >
 
@@ -318,7 +319,7 @@ source={{
        <EvilIcons style={{bottom:3,left:3}} color='#565656' name='location' size={15}></EvilIcons>
        <Text adjustsFontSizeToFit={true}
        numberOfLines={1} 
-       style={styles.hdist}> {item.distance}</Text>
+       style={styles.hdist}> {Math.round((item.distance + Number.EPSILON) * 100) / 100}</Text>
        <Text  style={{left:4,bottom:3}}>km</Text>
        </View>
       <View style={styles.hprice} >
@@ -430,7 +431,7 @@ const styles = StyleSheet.create({
               justifyContent:"center"
           },
           hdist:{
-              width:"34.5%",
+              width:"43%",
               height:18,
               alignItems:"center",
               flexDirection:"row",

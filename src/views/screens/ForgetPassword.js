@@ -1,11 +1,8 @@
 import React,{useState,useContext,useEffect} from 'react';
-import {SafeAreaView, StyleSheet, View, Text, Image,TouchableOpacity,TextInput,Button} from 'react-native';
+import {Modal,SafeAreaView, StyleSheet, View, Text, Image,TouchableOpacity,TextInput,Button} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-
-
-
-
+import LottieView from 'lottie-react-native';
+import BASEURL from '../../config'
 
 export default function AccountScreen (props)   {
     const {  navigation } = props
@@ -13,7 +10,8 @@ export default function AccountScreen (props)   {
     const [email, setemail] = useState('');
     const [errormsg,seterrormsg] = useState('');
     const [erroremailmsg,seterroremailmsg] = useState('')
-
+    const [showModal, setShowModal] = useState(false);
+    const [isLoading, setLoading] = useState(true);
 
     const emailmatch = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
 
@@ -31,7 +29,7 @@ export default function AccountScreen (props)   {
         const usermail = email 
         console.log(usermail)
 
-        fetch (`http://demo.foodduke.com/public/api/send-password-reset-mail?email=${usermail}`,
+        fetch (`${BASEURL}/public/api/send-password-reset-mail?email=${usermail}`,
         {
             method:'POST',
             headers: {
@@ -40,18 +38,25 @@ export default function AccountScreen (props)   {
            
         })
         .then((response) => response.json())
-        .then((json) => {setData(json),otpScreen()})
-        .then((data) => JSON.stringify(data))
+        .then((json) => setData(json),setShowModal(!showModal))
         .catch((error) => console.error(error))
+        .finally(()=> setLoading(false))
         console.log(data)
     }
      
+    // const otpScreen = () =>{
+    //   if (data.success == true)
+    //   return alert('Reset Otp sent to email'), navigation.navigate('Updatepassword',{
+    //     otpemail : email
+    //   })
+    // }
     const otpScreen = () =>{
-      if (data.success == true)
-      return alert('Reset Otp sent to email'), navigation.navigate('Updatepassword',{
+      if (data.message == 'Password reset mail sent')
+      return  navigation.navigate('Updatepassword',{
         otpemail : email
       })
-    }
+     else return console.log('ddd')
+  }
   
   return (
     <SafeAreaView style={{backgroundColor: 'white',height:800}}>
@@ -97,7 +102,50 @@ export default function AccountScreen (props)   {
               
    
       </View>
-
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={showModal}
+        onRequestClose={() => {
+          // alert("Modal has been closed.");
+          setShowModal(!showModal);
+        }}
+      >
+          <View style={styles.modal}>
+            
+            {isLoading ? (
+              otpScreen()
+            ):(
+          
+              <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+          <View style={{width:200,height:200,position:'absolute',top:-28}}>
+             <LottieView
+                          source={require('../../assets/loadingorder.json')}
+                          colorFilters={[
+                            {
+                              keypath: 'button',
+                              color: '#F00000',
+                            },
+                            {
+                              keypath: 'Sending Loader',
+                              color: '#F00000',
+                            },
+                          ]}
+                          autoPlay
+                          loop
+              
+                          />
+                          </View>
+            
+          </View>
+        </View>
+              
+             
+            )}
+           
+          </View>
+        </Modal>
 
       </View>
      
@@ -177,6 +225,25 @@ const styles = StyleSheet.create({
             bottom:26,
             right:80
           },
+          modalView: {
+            margin: 20,
+            backgroundColor: "white",
+            borderRadius: 20,
+            padding: 75,
+            alignItems: "center",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5
+          },
+          modalText: {
+            marginBottom: 15,
+            textAlign: "center"
+          }
  
 });
 

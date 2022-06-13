@@ -3,7 +3,7 @@ import {StyleSheet,Keyboard,Text,SafeAreaView,ActivityIndicator,View,Image} from
 import { AuthContext } from '../../../AuthContext';
 import List from "../components/List";
 import SearchBar from "../components/SearchBar";
-
+import BASEURL from '../../config'
 const Home = () => {
   const [searchPhrase, setSearchPhrase] = useState("");
   const [Loading, setLoading] = useState(true);
@@ -50,7 +50,7 @@ const long =userinfo[i] == null  ? (myloc):((userinfo[0].longitude))
 
  
     const getData = async () => {
-      fetch(`https://demo.foodduke.com/public/api/search-restaurants?latitude=${myloct}&longitude=${myloc}`,{
+      fetch(`${BASEURL}/public/api/search-restaurants?latitude=${myloct}&longitude=${myloc}`,{
             method:'POST'
         }
       )
@@ -64,7 +64,7 @@ const long =userinfo[i] == null  ? (myloc):((userinfo[0].longitude))
       
     };
     const oflinedata = async () => {
-        fetch(`https://demo.foodduke.com/public/api/search-restaurants?latitude=${lat}&longitude=${long}`,{
+        fetch(`${BASEURL}/public/api/search-restaurants?latitude=${lat}&longitude=${long}`,{
               method:'POST'
           }
         )
@@ -108,7 +108,7 @@ const long =userinfo[i] == null  ? (myloc):((userinfo[0].longitude))
       ) : (
        searchPhrase == '' ?(
           <View style={{backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
-            <Image style={{width:390,height:340,top:70}} source={{uri:('https://demo.foodduke.com/assets/img/various/explore-bg.png')}}></Image>
+            <Image style={{width:390,height:340,top:70}} source={{uri:(`${BASEURL}/assets/img/various/explore-bg.png`)}}></Image>
           </View>
        ):(
         <List

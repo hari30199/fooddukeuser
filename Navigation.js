@@ -2,10 +2,7 @@ import React ,{useContext,useState,useEffect}from 'react';
 import {Settings, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import COLORS from './src/consts/colors';
-import ViewallScreens from './src/views/screens/ViewallScreens';
 import BottomNavigator from './src/views/navigation/BottomNavigator';
-// import Location from './src/views/screens/Location';
 import Notification from './src/views/screens/Notification';
 import Currentloc from './src/views/screens/currentloc';
 import Detail from './src/views/screens/Detail';
@@ -17,8 +14,6 @@ import LocationView from './src/views/screens/LocationView';
 import Register from './src/views/screens/Resgister';
 import ForgetPassword from './src/views/screens/ForgetPassword'
 import FiltersScreen  from './src/views/screens/Hotels/FiltersScreen';
-import Settingsscreen  from './src/views/screens/Settingsscreen';
-import Location from './Location';
 import Favourites from './src/views/screens/Hotels/Favourites';
 import SavedAddress from './src/views/screens/SavedAddress';
 import ProfileScreen from './src/views/screens/ProfileScreen';
@@ -67,15 +62,14 @@ const App = () => {
   return (
    
     <NavigationContainer>
-      <StatusBar backgroundColor={COLORS.white} barStyle="dark-content" />
+      <StatusBar backgroundColor='white' barStyle="dark-content" />
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {mylocation != null ? (
-          <Stack.Screen name="Home" component={BottomNavigator} />
+         
+          <Stack.Screen name="BottomNavigator" component={BottomNavigator}/>
         ):
         (<Stack.Screen name="Home" component={IntroLocation} />) }
         <Stack.Screen name="SearchScreen" component={SearchScreen} />
-        <Stack.Screen name="ViewallScreens" component={ViewallScreens} />
-        {/* <Stack.Screen name="Location" component={Location} /> */}
         <Stack.Screen name="Notification" component={Notification} />
         <Stack.Screen name="Currentloc" component={Currentloc} />
         <Stack.Screen name="Detail" component={Detail}/>
@@ -85,8 +79,6 @@ const App = () => {
         <Stack.Screen name="CartScreen" component={CartScreen}/>
         <Stack.Screen name="FiltersScreen" component={FiltersScreen}/>
         <Stack.Screen name="ForgetPassword" component={ForgetPassword}/>
-        <Stack.Screen name="Location" component={Location} />
-        <Stack.Screen name="Settingsscreen" component={Settingsscreen} />
         <Stack.Screen name="Favourites" component={Favourites} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         <Stack.Screen name="SavedAddress" component={SavedAddress} />
@@ -106,6 +98,7 @@ const App = () => {
         {userInfo?.auth_token ? 
         (<Stack.Screen name="SplashScreen" component={SplashScreen}/>):
         <>
+        <Stack.Screen name="AccountScreen" component={AccountScreen}/>
         <Stack.Screen name="Register" component={Register}/>
         <Stack.Screen name="OTPscreen" component={OTPscreen}/>
         <Stack.Screen name="Phonenumber" component={Phonenumber}/>

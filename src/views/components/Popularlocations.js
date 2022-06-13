@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 // import Geolocation from 'react-native-geolocation-service';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-
+import BASEURL from '../../config'
 const delivery = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -13,7 +13,7 @@ const delivery = () => {
  
   useEffect(() => {
    
-    fetch(`https://demo.foodduke.com/public/api/popular-geo-locations`,{
+    fetch(`${BASEURL}/public/api/popular-geo-locations`,{
       method: 'POST', 
            
             headers: {

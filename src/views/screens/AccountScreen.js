@@ -4,42 +4,57 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AuthContext} from '../../../AuthContext';
 import LottieView from 'lottie-react-native';
-
-const LoginScreen = ({navigation}) => {
+import BASEURL from '../../config'
+const LoginScreen = ({navigation,route}) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const {isLoading,userInfo, login,googlelogin,signOut} = useContext(AuthContext);
   const [errormsg, seterrormsg] = useState('');
+  const [errorms, seterrorms] = useState('');
+  // const {fromcart} = route.params
+  
   const [erroremailmsg, seterroremailmsg] = useState('');
   const [errorpassmsg, seterrorpassmsg] = useState('');
   const [errorpassmatchmsg, seterrormatchpassmsg] = useState('');
-
+  // console.log(fromcart)
   const emailmatch = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
   const passwordmatch = /^.*(?=.{8,})/
-  
+  global.MyVar = errorms;
 
+  const fromcart = (route.params != null && route.params != undefined)?(Object.values(route.params)):(<Text></Text>)
+  console.log(Object.values( fromcart))
+  //  if ( route.params.fromcart != undefined) 
+  //   console.log('world')
+   
+  //  else console.log('values')
+   
+  // const somestr = route.params.fromcart 
+  // console.log(somestr)
+  const  Validatenav = (fromcart) => {
+    console.log(fromcart)
+    if (fromcart == [3006])
+    return seterrorms('somevalue')
+    console.log('something',errorms)
+  }
 
-   const submit = () => {
-      if (email == null || password == null)
-      return seterroremailmsg ('Enter your valid Email'), seterrormatchpassmsg('Password must contain atleat 8 characters')
-      // if (email == null )
-      // return seterroremailmsg ('Enter your valid Email ')
-      else if (!emailmatch.test(email))
-      return seterrormsg ('Enter your valid Email ')
-      // if (password == null)
-      // return seterrormatchpassmsg('Password must contain atleat 8 characters')
-      else if (!passwordmatch.test(password))
-      return seterrormatchpassmsg('Password must contain atleat 8 characters')
-      else
-      return login(email, password)
-      }
-
-      // const onchangetext = () => {
-      //   if (!emailmatch.test(email))
-      //   return seterrormsg ('Enter your valid Email ')
-      //   else (!emailmatch.test(email))
-      //   return seterrormsg ('Enter your  ')
-      // }
+  useEffect(()=>{
+       Validatenav()
+  },[])
+ 
+  const submit = () => {
+    if (email == null || password == null)
+    return seterroremailmsg ('Enter your valid Email '), seterrormatchpassmsg('Password must contain atleat 8 characters')
+    // if (email == null )
+    // return seterroremailmsg ('Enter your valid Email ')
+    else if (!emailmatch.test(email))
+    return seterrormsg ('Enter your valid Email ')
+    // if (password == null)
+    // return seterrormatchpassmsg('Password must contain atleat 8 characters')
+    else if (!passwordmatch.test(password))
+    return seterrormatchpassmsg('Password must contain atleat 8 characters')
+    else
+    return Validatenav(fromcart),login(email, password)
+    }
 
   return (
     isLoading ? 
@@ -51,7 +66,7 @@ const LoginScreen = ({navigation}) => {
     :
    
     <View style={styles.container}>
-       <ScrollView>
+       <ScrollView keyboardShouldPersistTaps={'always'}>
       <View style={styles.head}>
       <View style={styles.backbutn}>
             <Icon name="arrow-back-ios" size={28} onPress={navigation.goBack} style={{left:30}} />
@@ -64,24 +79,27 @@ const LoginScreen = ({navigation}) => {
           <View style={{width:'50%'}}>
           <Image
             style={{ width: '100%', height: 150,justifyContent:"center",left:18}}
-             source={{uri:`https://demo.foodduke.com/assets/img/various/login-illustration.png`}}></Image>
+             source={{uri:`${BASEURL}/assets/img/various/login-illustration.png`}}></Image>
           </View>
        </View>
       </View>
       
       <View style={styles.wrapper}>
       <KeyboardAvoidingView
-           behavior={Platform.OS === "ios" ? "padding" : "height"} >
+           behavior={Platform.OS === "ios" ? "padding" : "height"}
+           
+         >
         <TextInput
           style={styles.input}
           value={email}
           placeholder="Enter email"
-          onChangeText={text => setEmail(text)}
+          onChangeText={text=>setEmail(text)}
+          // onChangeText={(e) => setEmail( e.target.value)}
           maxLength = {50}
         />
         <View style={{bottom:6}}>
           {/* <Text>{email != null ? (<Text></Text>):(<Text style={{color:'red',textAlign:'center',left:10}}>{errormsg}</Text>) }</Text> */}
-         <Text>{!emailmatch.test(email) ? (<Text style={{color:'red',textAlign:'center',left:10}}>{erroremailmsg}</Text>):(<Text></Text>) }</Text>
+         <Text>{!emailmatch.test(email) ? (<Text style={{color:'red',textAlign:'center',left:10}}>{erroremailmsg}{errormsg}</Text>):(<Text></Text>) }</Text>
          </View>
         <TextInput
           style={styles.input}
@@ -96,7 +114,7 @@ const LoginScreen = ({navigation}) => {
         {/* <Text>{ password != null ? (<Text></Text>):(<Text style={{color:'red',textAlign:'center',left:10}}>{errorpassmsg}</Text>) }</Text> */}
         <Text>{ passwordmatch.test(password)? (<Text></Text>):( <Text style={{color:'red',textAlign:'center',left:10,bottom:10}}>{errorpassmatchmsg}</Text>) }</Text>
         </View>
-         
+         {/* <Text> itemId: {JSON.stringify(navigation.getParam('', 'NO-ID'))}</Text> */}
             <TouchableOpacity title="Login"onPress={()=>submit()}>
               
             <Text style={styles.button}>Login </Text></TouchableOpacity>
@@ -108,11 +126,12 @@ const LoginScreen = ({navigation}) => {
               
             <View style={{top:10,alignItems:'center'}}>
 
-            <TouchableOpacity style={{top:14,borderWidth:0.3,padding:10,borderRadius:5,backgroundColor:'white',borderColor:'#57575730'}} onPress={() =>  googlelogin()} >
+            <TouchableOpacity style={{top:14,borderWidth:0.3,padding:10,borderRadius:5,backgroundColor:'white',borderColor:'#57575730'}}
+             onPress={() =>  {googlelogin(),Validatenav(fromcart)}} >
               <View style={{flexDirection:'row'}}>
               <Image style={{width:20,height:20,}}
               source={{
-                uri :'http://meatapp.smartstorez.com/assets/img/various/google.png'
+                uri :`${BASEURL}/assets/img/various/google.png`
               }}
               ></Image>
               <Text style={{fontFamily:'FontAwesome5_Solid',top:2}}>   Login in with Google</Text>
@@ -126,7 +145,9 @@ const LoginScreen = ({navigation}) => {
           </View>
         <View style={{flexDirection: 'row', marginTop: 44,justifyContent:'center'}}>
           <Text>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Register',{
+            fromlogin : 4001
+          })}>
             <Text style={styles.link}>Register</Text>
           </TouchableOpacity>
         </View>
@@ -138,7 +159,7 @@ const LoginScreen = ({navigation}) => {
         </View>
       </View>
       
-    
+   
       </ScrollView> 
       <View style={styles.bottomView}>
         <LottieView
@@ -178,12 +199,13 @@ const styles = StyleSheet.create({
     width:'100%',
     borderRadius:6,
     marginBottom:12,
-    height:45,
-    paddingLeft:20,
+    height:56,
+    paddingLeft:30,
     backgroundColor:'white'
   },
   link: {
     color: 'orange',
+    
   },
   button:{
     backgroundColor:'orange',
@@ -231,4 +253,4 @@ backbutn:{
     },
 });
 
-export default LoginScreen;
+export default LoginScreen

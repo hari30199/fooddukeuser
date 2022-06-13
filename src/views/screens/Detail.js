@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../../../AuthContext';
 import RNRestart from 'react-native-restart'; 
+import BASEURL from '../../config'
 export default class Detail extends Component {
 
   constructor(props) {
@@ -55,7 +56,7 @@ export default class Detail extends Component {
           loading: false
         })
       },
-      { enableHighAccuracy: false, timeout: 200000, maximumAge: 5000, },
+      { enableHighAccuracy: true, timeout: 200, maximumAge: 5000, },
     );
   }
 
@@ -63,27 +64,27 @@ export default class Detail extends Component {
     this.setState({ isMapReady: true, marginTop: 0 });
   }
 
-  fetchAddress = () => {
-    const lat =  this.state.region.latitude + "," + this.state.region.longitude
+  fetchAddress = async () => {
+  
     
-    fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + lat + "&key=" + "AIzaSyCsSMOQKo0RE0mKvmqjQWMGhHmVVqqEmsU",{
-      headers: {
-        'Accept': '*/*',
-        'Content-Type': 'application/json',
-    },
-    })
-      .then((response) =>  response.json())
-      .then((responseJson) => {
-        const userLocation = responseJson != undefined && responseJson != null ?
-        (responseJson.results[0].formatted_address):("Loading..") 
-        console.log(userLocation),
-        this.setState({
-          userLocation: userLocation,
-          // console.log(userLocation),
-           regionChangeProgress: false
-        });
-      });
-  }
+    await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${this.state.region.latitude},${this.state.region.longitude}&key=AIzaSyCsSMOQKo0RE0mKvmqjQWMGhHmVVqqEmsU`,{
+       headers: {
+         'Accept': '*/*',
+         'Content-Type': 'application/json',
+     },
+     })
+       .then((response) =>  response.json())
+       .then((responseJson) => {
+         const userLocation = responseJson.results[0].formatted_address
+         
+         console.log(userLocation),
+         this.setState({
+           userLocation: userLocation,
+           // console.log(userLocation),
+            regionChangeProgress: false
+         });
+       });
+   }
   onRegionChange = region => {
     this.setState({
       region,
@@ -157,8 +158,9 @@ export default class Detail extends Component {
                   
                   
                 >
-                    <ImageBackground style={{width:30,height:44}} source={{uri:'https://demo.foodduke.com/assets/img/various/dragable-markerv2.png'}}>
-                    </ImageBackground>
+                  <Image style={{width:25,height:38}}
+                 source={require('../../assets/markerhome.png')}>
+                </Image>
                 </MapView.Marker>
                  
               </MapView>

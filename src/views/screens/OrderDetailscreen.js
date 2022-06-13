@@ -10,7 +10,7 @@ import { useIsFocused } from '@react-navigation/native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import call from 'react-native-phone-call';
 import LottieView from "lottie-react-native";
-
+import BASEURL from '../../config'
 
 // const wait = (timeout) => {
 //   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -150,7 +150,7 @@ import LottieView from "lottie-react-native";
 
 
     const Delivery = async  () => {
-      await fetch('https://demo.foodduke.com/public/api/update-user-info',{
+      await fetch(`${BASEURL}/public/api/update-user-info`,{
           method:'POST',
           headers: {
             "content-type": "application/json",
@@ -267,8 +267,8 @@ import LottieView from "lottie-react-native";
   </MapView>
  
  <View style={{top:20}}>
- <View style={{width:'100%',height:50,alignItems:'center',flexDirection:'row',flex:1,justifyContent:'center',bottom:6,}}>
-     <Text style={{fontFamily:'FontAwesome5_Solid',color:'black'}}>{results.name} is your delivery valet today.                     </Text>
+ <View style={{width:'100%',height:50,alignItems:'center',flexDirection:'row',flex:1,justifyContent:'space-evenly',bottom:6,}}>
+     <Text style={{fontFamily:'FontAwesome5_Solid',color:'black'}}>{results.name} is your delivery valet today.</Text>
      <TouchableOpacity onPress={triggerCall} style={{fontFamily:'FontAwesome5_Solid',color:'black',borderWidth:0.3,textAlign:'center',padding:9,flexDirection:'row'}}>
      <Text style={{fontFamily:'FontAwesome5_Solid',color:'black',right:4}}>Call Now</Text>
      <SimpleLineIcons name='call-out' size={14} color="black" />
@@ -286,7 +286,7 @@ import LottieView from "lottie-react-native";
         </View>
         <View style={{width:70,height:70,}}></View>
         <Image  style={{width:70,height:70,transform: [{ scaleX: -1 }]}}  
-     source={{uri:'https://demo.foodduke.com/assets/img/order-onway.gif'}} />
+     source={{uri:`${BASEURL}/assets/img/order-onway.gif`}} />
     </View>
         <View style={{width:'94%',height:80,top:10,left:10,flexDirection:'row',borderBottomColor:'#57575730',borderBottomWidth:0.3}}>
         <View style={{width:'60%',height:300,left:10}}>
@@ -295,7 +295,7 @@ import LottieView from "lottie-react-native";
         </View>
         <View style={{width:70,height:70,}}></View>
         <Image  style={{width:70,height:70,}} 
-     source={{uri:'https://meatapp.smartstorez.com/assets/img/order-onway.gif' }} />
+     source={{uri:`${BASEURL}/assets/img/order-onway.gif`}} />
     </View>
      <View style={{width:'94%',height:80,left:10,top:20,flexDirection:'row',borderBottomColor:'#57575730',borderBottomWidth:0.3}}>
      <View style={{width:'60%',height:300,left:10}}>
@@ -304,7 +304,7 @@ import LottieView from "lottie-react-native";
      </View>
      <View style={{width:70,height:70,}}></View>
      <Image  style={{width:70,height:70,}} 
-  source={{uri:'https://demo.foodduke.com/assets/img/order-preparing.gif' }} />
+  source={{uri:`${BASEURL}/assets/img/order-preparing.gif` }} />
  </View>
  <View style={{width:'94%',height:100,left:10,top:24,flexDirection:'row',borderBottomColor:'#57575730',borderBottomWidth:0.3,bottom:30}}>
           <View style={{width:'60%',height:300,left:10}}>
@@ -313,7 +313,7 @@ import LottieView from "lottie-react-native";
           </View>
           <View style={{width:70,height:70,}}></View>
           <Image  style={{width:70,height:70,}} 
-    source={{uri:'https://demo.foodduke.com/assets/img/order-placed.gif' }} />
+    source={{uri:`${BASEURL}/assets/img/order-placed.gif`}} />
       </View>
  </View>  
  
@@ -329,7 +329,7 @@ import LottieView from "lottie-react-native";
         </View>
         <View style={{width:70,height:70,}}></View>
         <Image  style={{width:70,height:70,}} 
-     source={{uri:'https://demo.foodduke.com/assets/img/order-preparing.gif' }} />
+     source={{uri:`${BASEURL}/assets/img/order-preparing.gif`}} />
     </View>
      <View style={{width:'94%',height:80,left:10,top:26,flexDirection:'row',borderBottomColor:'#57575730',borderBottomWidth:0.3}}>
      <View style={{width:'60%',left:10}}>
@@ -338,7 +338,7 @@ import LottieView from "lottie-react-native";
      </View>
      <View style={{width:70,height:70,}}></View>
      <Image  style={{width:70,height:70,}} 
-source={{uri:'https://demo.foodduke.com/assets/img/order-placed.gif' }} />
+source={{uri:`${BASEURL}/assets/img/order-placed.gif`}} />
  </View></View>
       ):(<Text style={{height:0}}></Text>)
       }
@@ -351,7 +351,7 @@ source={{uri:'https://demo.foodduke.com/assets/img/order-placed.gif' }} />
          </View>
          <View style={{width:70,height:70,}}></View>
          <Image  style={{width:70,height:70,}} 
-      source={{uri:'https://demo.foodduke.com/assets/img/order-onway.gif' }} />
+      source={{uri:`${BASEURL}/assets/img/order-onway.gif`}} />
      </View>
       <View style={{width:'94%',height:80,left:10,top:20,flexDirection:'row',borderBottomColor:'#57575730',borderBottomWidth:0.3}}>
       <View style={{width:'60%',height:300,left:10}}>
@@ -360,7 +360,7 @@ source={{uri:'https://demo.foodduke.com/assets/img/order-placed.gif' }} />
       </View>
       <View style={{width:70,height:70,}}></View>
       <Image  style={{width:70,height:70,}} 
-   source={{uri:'https://demo.foodduke.com/assets/img/order-preparing.gif' }} />
+   source={{uri:`${BASEURL}/assets/img/order-preparing.gif`}} />
   </View>
   <View style={{width:'94%',height:80,left:10,top:32,flexDirection:'row',borderBottomColor:'#57575730',borderBottomWidth:0.3}}>
           <View style={{width:'60%',left:10}}>
@@ -369,7 +369,7 @@ source={{uri:'https://demo.foodduke.com/assets/img/order-placed.gif' }} />
           </View>
           <View style={{width:70,height:70,}}></View>
           <Image  style={{width:70,height:70,}} 
-    source={{uri:'https://demo.foodduke.com/assets/img/order-placed.gif' }} />
+    source={{uri:`${BASEURL}/assets/img/order-placed.gif`}} />
       </View>
   </View>
       ):(<Text style={{height:0}}></Text>)}
@@ -383,7 +383,7 @@ source={{uri:'https://demo.foodduke.com/assets/img/order-placed.gif' }} />
           </View>
           <View style={{width:70,height:70,}}></View>
           <Image  style={{width:70,height:70,}} 
-    source={{uri:'https://demo.foodduke.com/assets/img/order-placed.gif' }} />
+    source={{uri:`${BASEURL}/assets/img/order-placed.gif`}} />
       </View>
   ):(<Text></Text>)}
     </View>

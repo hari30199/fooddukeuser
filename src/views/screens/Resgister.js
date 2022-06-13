@@ -5,7 +5,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AuthContext} from '../../../AuthContext';
 import LottieView from 'lottie-react-native';
-
+import BASEURL from '../../config'
 const RegisterScreen = ({navigation}) => {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
@@ -68,7 +68,7 @@ const RegisterScreen = ({navigation}) => {
   const usermail = email 
   console.log('mail',usermail)
 
-  fetch (`http://demo.foodduke.com/public/api/send-password-reset-mail?email=${usermail}`,
+  fetch (`${BASEURL}/public/api/send-password-reset-mail?email=${usermail}`,
   {
       method:'POST',
       headers: {
@@ -95,7 +95,7 @@ const checkotp = () =>{
 
 
  const otpverification = () =>{
-  fetch(`http://demo.foodduke.com/public/api/get-setting/enSOV`,{
+  fetch(`${BASEURL}/public/api/get-setting/enSOV`,{
     method:'GET',
     headers: {
       'Content-Type': 
@@ -124,7 +124,7 @@ useEffect(()=>{
   <View  style={styles.container}>
 
  
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps={'always'}>
     <View style={{alignItems:'center'}}>
       <Spinner visible={isLoading} />
       <View style={styles.head}>

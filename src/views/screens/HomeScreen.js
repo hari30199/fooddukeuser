@@ -1,23 +1,24 @@
 import Search from '../components/Search';
-import React, {useState,useEffect,useContext} from 'react';
-import {Image,PixelRatio,RefreshControl,StyleSheet,Text,View,TouchableOpacity,ScrollView,Button} from 'react-native';
+import React, {Suspense, useState,useEffect,useContext} from 'react';
+import {Image,PixelRatio,RefreshControl,StyleSheet,Text,View,TouchableOpacity,Button} from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import Nearyou from '../components/Nearyou';
-import Blog from '../components/Blog';
-import Curtains from '../components/Curtains';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthContext } from '../../../AuthContext';
-import PromoSlider from '../components/PromoSlider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
-
+import TextTicker from 'react-native-text-ticker'
+import {ScrollView} from 'react-native-virtualized-view'
+ 
 const HomeScreen = (props) => {
   const { route, navigation } = props
   const [mylocation,setmylocation] = useState("Select address")
   const [refreshing, setRefreshing] = React.useState(false);
   const [splashLoading, setSplashLoading] = useState(false);
-  const {userinfo} = useContext(AuthContext);
-
+  const {userinfo,isLoading} = useContext(AuthContext);
+  
+  const Nearyou = React.lazy(() => import('../components/Nearyou'));
+  const Blog = React.lazy(()=> import('../components/Blog'))
+  const Curtains = React.lazy(()=> import('../components/Curtains'))
 
  
    const wait = (timeout) => {
@@ -48,7 +49,12 @@ const HomeScreen = (props) => {
    }
  }
 
+ const goToFoo = () => {
+  navigation.navigate('LocationView')
+}
+
   var i =0
+
   return (
    <SafeAreaView>
      <ScrollView
@@ -59,97 +65,130 @@ const HomeScreen = (props) => {
       style={style.logo}
       source={require('../../assets/foodlogo.png')}
     />
-    {!userinfo.auth_token ? (
+     {!userinfo.auth_token ? (
          
-    <View style={style.location}>
-    {(userinfo[i] == null && userinfo[i] == undefined) ? ( 
-      <View>
-        <TouchableOpacity onPress={
-          () => navigation.navigate('LocationView')}>
-            <View style={{width:32,height:42,position:'absolute',top:-8}}>
-             <LottieView
-             
-                          source={require('../../assets/hloc.json')}
-                          colorFilters={[
-                            {
-                              keypath: 'button',
-                              color: '#F00000',
-                            },
-                            {
-                              keypath: 'Sending Loader',
-                              color: '#F00000',
-                            },
-                          ]}
-                          autoPlay
-                          loop
+         <View style={style.location}>
+         {(userinfo[i] == null && userinfo[i] == undefined) ? ( 
+           <View>
+             <TouchableOpacity onPress={
+               () => goToFoo()}>
+                 <View style={{width:32,height:42,position:'absolute',top:-8,right:100}}>
+                  <LottieView
+                               source={require('../../assets/hloc.json')}
+                               colorFilters={[
+                                 {
+                                   keypath: 'button',
+                                   color: '#F00000',
+                                 },
+                                 {
+                                   keypath: 'Sending Loader',
+                                   color: '#F00000',
+                                 },
+                               ]}
+                               autoPlay
+                               loop
+                   
+                               />
+                               </View>
+               <TextTicker
+                style={{left:25,top:6,width:100,height:100}}
+               duration={8000}
+               loop
+               bounce = {false}
+               repeatSpacer={20}
+               marqueeDelay={1000}
+             >
+               {mylocation}
+             </TextTicker>
+             </TouchableOpacity>
+             </View>
+           ):(
+             <View style={{flexDirection:'row'}}>
+             <TouchableOpacity onPress={
+               () => goToFoo()}>
+                  <View style={{width:32,height:42,position:'absolute',top:-8,right:100}}>
+                  <LottieView
+                  
+                               source={require('../../assets/hloc.json')}
+                               colorFilters={[
+                                 {
+                                   keypath: 'button',
+                                   color: '#F00000',
+                                 },
+                                 {
+                                   keypath: 'Sending Loader',
+                                   color: '#F00000',
+                                 },
+                               ]}
+                               autoPlay
+                               loop
+                   
+                               />
+                               </View>
+               
+               <TextTicker
+                style={{left:25,top:6,width:100,height:100}}
+               duration={8000}
+               loop
+               bounce = {false}
+               repeatSpacer={20}
+               marqueeDelay={1000}
+             >
+               {Object.values(userinfo[i].address)}
+             </TextTicker>
+             </TouchableOpacity>
+             </View>
+           )}
+         
+        
+           </View>
+         ):(
               
-                          />
-                          </View>
-          <Text style={{left:30,top:6}}>{mylocation} </Text>
-        </TouchableOpacity>
-        </View>
-      ):(
-        <View style={{flexDirection:'row'}}>
-        <TouchableOpacity onPress={
-          () => navigation.navigate('LocationView')}>
-             <View style={{width:32,height:42,position:'absolute',top:-8}}>
-             <LottieView
-             
-                          source={require('../../assets/hloc.json')}
-                          colorFilters={[
-                            {
-                              keypath: 'button',
-                              color: '#F00000',
-                            },
-                            {
-                              keypath: 'Sending Loader',
-                              color: '#F00000',
-                            },
-                          ]}
-                          autoPlay
-                          loop
-              
-                          />
-                          </View>
-          <Text style={{left:26,top:6}}>{Object.values(userinfo[i].address)}</Text>
-        </TouchableOpacity>
-        </View>
-      )}
-    
+         <View style={style.location}>
+             <View style={{flexDirection:'row'}}>
+             <TouchableOpacity onPress={
+               () => goToFoo()}>
+                  <View style={{width:32,height:42,position:'absolute',top:-8,right:100}}>
+                  <LottieView
+                  
+                               source={require('../../assets/hloc.json')}
+                               colorFilters={[
+                                 {
+                                   keypath: 'button',
+                                   color: '#F00000',
+                                 },
+                                 {
+                                   keypath: 'Sending Loader',
+                                   color: '#F00000',
+                                 },
+                               ]}
+                               autoPlay
+                               loop
+                   
+                               />
+                               </View>
+               <Text style={{left:26,top:6}}>{mylocation}</Text>
+               <TextTicker
+                style={{left:25,top:6,width:100,height:100}}
+               duration={8000}
+               loop
+               bounce = {false}
+               repeatSpacer={20}
+               marqueeDelay={1000}
+             >
+               {mylocation}
+             </TextTicker>
+             </TouchableOpacity>
+             </View>
+           </View>
+         )}
    
       </View>
-    ):(
-         
-    <View style={style.location}>
-        <View style={{flexDirection:'row'}}>
-        <TouchableOpacity onPress={
-          () => navigation.navigate('LocationView')}>
-             <View style={{width:32,height:42,position:'absolute',top:-8}}>
-             <LottieView
-             
-                          source={require('../../assets/hloc.json')}
-                          colorFilters={[
-                            {
-                              keypath: 'button',
-                              color: '#F00000',
-                            },
-                            {
-                              keypath: 'Sending Loader',
-                              color: '#F00000',
-                            },
-                          ]}
-                          autoPlay
-                          loop
-              
-                          />
-                          </View>
-          <Text style={{left:26,top:6}}>{mylocation}</Text>
-        </TouchableOpacity>
-        </View>
-      </View>
-    )}
-   
-      </View>
+       <Suspense fallback={  <View style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'white'}}>
+           <Image style={{width:250,height:250}}
+            source={require('../../assets/loader.gif')} >
+         </Image>
+         </View>}>
       <TouchableOpacity onPress={
           () => navigation.navigate('Explore')}>
        <Search/>
@@ -162,10 +201,12 @@ const HomeScreen = (props) => {
       <Curtains />
       </View>
       <View  style={{bottom:2}}>
-      <Nearyou/> 
-      </View>    
-      <PromoSlider/>  
-      {/* <Sw/> */}   
+       
+        <Nearyou/>
+        
+     
+      </View>      
+      </Suspense>  
     </ScrollView>
     </SafeAreaView>
   );

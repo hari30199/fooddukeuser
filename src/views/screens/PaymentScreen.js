@@ -7,24 +7,23 @@ import { SvgUri } from 'react-native-svg';
 import RazorpayCheckout from 'react-native-razorpay';
 import LottieView from 'lottie-react-native';
 import {  Overlay } from 'react-native-elements';
-
+import BASEURL from '../../config'
 export default function App (props) {
   const [isLoading, setLoading] = useState(true);
   const [Loading ,setisloading] = useState(true)
   const [data, setData] = useState([]);
   const [result, setdata] = useState([]);
-  const {  topay,deliverytype,address,couponname,lat,long } = props.route.params;
+  const {  topay,deliverytype,address,couponname,lat,long ,quantity} = props.route.params;
   const {  navigation } = props
   const {userinfo,userInfo} = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
   // console.log(address)
   console.log('coupon',deliverytype)
-  const names = topay;
-  const nameArr = names.split(',');
+
   
   useEffect(() => {
    
-    fetch('https://demo.foodduke.com/public/api/get-payment-gateways',{
+    fetch(`${BASEURL}/public/api/get-payment-gateways`,{
       method:'POST',
       headers: {
         'Accept': '*/*',
@@ -61,7 +60,7 @@ console.log('type',type)
   console.log(userInfo.auth_token)
 
  const location = {lat,long,address}
-//  console.log('locationnew',location)
+ console.log('locationnew',location)
   const makepayment = () =>{
   //  var location = (userinfo[0] == null && userinfo[0] == undefined) ?
   //   (mylocation):
@@ -73,7 +72,7 @@ console.log('type',type)
     // console.log(id)
     // console.log(name)
    
-    fetch('https://demo.foodduke.com/public/api/place-order',{
+    fetch(`${BASEURL}/public/api/place-order`,{
       method:'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,7 +90,7 @@ console.log('type',type)
       "tipAmount":0,
       "token":token,
       "user_id":id,
-      "total":{"productQuantity":2,"totalPrice":topay}
+      "total":{"productQuantity":quantity,"totalPrice":topay}
     })
     })
     
@@ -116,7 +115,7 @@ console.log('type',type)
       // console.log(id)
       // console.log(name)
       console.log(location)
-      fetch('https://demo.foodduke.com/public/api/place-order',{
+      fetch(`${BASEURL}/public/api/place-order`,{
         method:'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +133,7 @@ console.log('type',type)
         "tipAmount":0,
         "token":token,
         "user_id":id,
-        "total":{"productQuantity":2,"totalPrice":nameArr[0]}
+        "total":{"productQuantity":quantity,"totalPrice":topay}
       })
       })
       
@@ -152,7 +151,7 @@ console.log('type',type)
   let options = {
     description: 'Online',
     currency: 'INR',
-    amount: nameArr[0] * 100,
+    amount: topay * 100,
     key: 'rzp_test_eKSxlmsMoMXNua',
     name: userInfo.name,
     prefill: {
@@ -203,7 +202,7 @@ console.log('type',type)
         color:'black'
       }}>TO PAY :  <Image
       style={{ width:15, height:15,top:5,right:4,}}
-      source={require('../../assets/rupee.png')}></Image> {nameArr[0]}</Text>
+      source={require('../../assets/rupee.png')}></Image> {topay}</Text>
       </View>
     <View>
       
@@ -253,7 +252,7 @@ console.log('type',type)
                <SvgUri style={{right:200,top:32}}
               width="40%"
               height="40%"
-              uri={`https://demo.foodduke.com/${item.logo}`}
+              uri={`${BASEURL}/${item.logo}`}
               
              />
                 </View>

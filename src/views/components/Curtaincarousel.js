@@ -2,17 +2,15 @@ import React, { useEffect, useState,useContext } from 'react';
 import {StyleSheet,Text,View, Image,ScrollView,TouchableOpacity ,FlatList} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import { SvgUri } from 'react-native-svg';
-import zIndex from '@material-ui/core/styles/zIndex';
+import BASEURL from '../../config'
 export default function Curtaincarousel (props) {
   const [isLoading, setLoading] = useState(true);
   const navigation = useNavigation();
   const [data, setData] = useState([]);
-  // const url = `https://meatapp.smartstorez.com`
-  // console.log (data);
+
 
    useEffect(() => {
-    fetch('https://demo.foodduke.com/public/api/get-menu-categories',{
+    fetch(`${BASEURL}/public/api/get-menu-categories`,{
       method:'POST',
       headers: {
         'Accept': '*/*',
@@ -25,6 +23,10 @@ export default function Curtaincarousel (props) {
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
       // console.log(data)
+
+      return () => {
+        setData({}); 
+      };
   }, []);
   
 
@@ -91,7 +93,7 @@ export default function Curtaincarousel (props) {
                              height="60%"
                              uri={`https://demo.foodduke.com/${item.image}`}
                             /> */}
-        <Image style={{width:50,height:56,borderRadius:50}} source={{uri:`https://demo.foodduke.com/${item.image}`}}/>
+        <Image style={{width:50,height:56,borderRadius:50}} source={{uri:`${BASEURL}/${item.image}`}}/>
         <Text style={styles.text}>{item.name}</Text>
         
             </View>

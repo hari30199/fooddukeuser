@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {AuthContext} from '../../../AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import {  Overlay } from 'react-native-elements';
+import BASEURL from '../../config'
 const Notification = ({ navigation: { navigate } }) => {
   const navigation = useNavigation();
   const {userInfo, isLoading, logout,signOut} = useContext(AuthContext);
@@ -36,7 +37,7 @@ const Notification = ({ navigation: { navigate } }) => {
        <Image 
           style={{ width: '90%', height: 140,bottom:24}}
           source={{
-            uri:`http://meatapp.smartstorez.com/assets/img/various/avatars/user5.gif`
+            uri:`${BASEURL}/assets/img/various/avatars/user5.gif`
           }}
           
         />
@@ -72,6 +73,27 @@ const Notification = ({ navigation: { navigate } }) => {
        ></Image>
           <Text style={styles.wordtext}>My Orders</Text>
           </TouchableOpacity>
+          
+        </View>
+        <View style={styles.word}>
+        <TouchableOpacity style={{bottom:4}} onPress={()=>navigation.navigate('MyWallet')}>
+       <Image 
+       style={{width:30,height:30,alignSelf:'center'}}
+       source={require('../../assets/MyWallet.png')}
+       ></Image>
+          <Text style={styles.wordtext}>My Wallet</Text>
+          </TouchableOpacity>
+          
+        </View>
+        <View style={styles.word}>
+        <TouchableOpacity style={{bottom:4}} onPress={()=>navigation.navigate('Favourites')}>
+       <Image 
+       style={{width:32,height:32,alignSelf:'center'}}
+       source={require('../../assets/favorite.png')}
+       ></Image>
+          <Text style={styles.wordtext}>My Favourites</Text>
+          </TouchableOpacity>
+          
         </View>
       </View>
     </View>

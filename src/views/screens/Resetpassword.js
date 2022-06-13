@@ -3,6 +3,7 @@ import {Text,View} from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { AuthContext } from '../../../AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import BASEURL from '../../config'
 export default function Resetpassword() {
   const [email,setemail] = useState([]);
   const [data, setData] = useState([]);
@@ -13,7 +14,7 @@ export default function Resetpassword() {
        
        const email = userInfo.email
        console.log(email)
-       fetch (`http://demo.foodduke.com/public/api/send-password-reset-mail?email=${email}`,
+       fetch (`${BASEURL}/public/api/send-password-reset-mail?email=${email}`,
        {
            method:'POST',
            headers: {

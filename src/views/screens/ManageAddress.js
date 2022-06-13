@@ -6,7 +6,7 @@ import { AuthContext } from '../../../AuthContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MenuProvider } from 'react-native-popup-menu';
 import {Menu,MenuOptions,MenuOption,MenuTrigger,} from 'react-native-popup-menu';
-
+import BASEURL from '../../config'
 
 const wait = (timeout) => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -33,7 +33,7 @@ const Delivery = (props) => {
 
 
 const getaddress =() =>{
-    fetch(`https://demo.foodduke.com/public/api/get-addresses?` ,
+    fetch(`${BASEURL}/public/api/get-addresses?` ,
     {
       method: 'POST', 
         body:JSON.stringify({
@@ -56,7 +56,7 @@ const getaddress =() =>{
   },[])
 
   const deleteaddress = (id) =>{
-    fetch(`https://demo.foodduke.com/public/api/delete-address?` ,
+    fetch(`${BASEURL}/public/api/delete-address?` ,
     {
       method: 'POST', 
         body:JSON.stringify({
@@ -73,7 +73,7 @@ const getaddress =() =>{
           .then((items) => JSON.stringify(items))
           .catch((error) => console.error(error))
           .finally(() => setLoading(false));
-          console.log(data)
+          // console.log(data)
   }
   const checkcartexist = (id) =>{
     const found = data.find(el => el.item_id === id); 
@@ -90,67 +90,6 @@ const getaddress =() =>{
              source={require('../../assets/loader.gif')} >
           </Image>
           </View>:
-    // <View style={styles.categories}>
-    // <View style={{backgroundColor:'white',flexDirection:'row',height:70,}}>
-    //   <Icon name="arrow-back-ios" size={24} onPress={navigation.goBack} style={{left:20,top:25}} />
-    //   <Text style={{
-    //     fontSize:18,
-    //     fontWeight:'500',
-    //     left:40,
-    //     top:25,
-    //     color:'black'
-    //   }}>Manage Address</Text>
-    //   {/* <TouchableOpacity>
-    //   <Text>Add New</Text>
-    //   </TouchableOpacity> */}
-    //   </View>
-    //   {isLoading ? <Text style={{color:'orange',top:20}}>Working on it...</Text> : 
-    //   ( <View style={{  flexDirection: 'column', justifyContent:  'space-between'}}>
-      // <ScrollView >
-      //     <FlatList
-      //       data={data}
-      //       keyExtractor={({ id }, index) => id} 
-          
-      //       renderItem={({ index,item }) => (
-      //           <View>
-      //           <Text style={styles.address}>{item.address}</Text>
-      //           {checkcartexist(item.id)?(
-      //           //     <TouchableOpacity onPress={()=>deleteaddress(item.id)}>
-      //           //     <View style={styles.container}> 
-      //           //     <Text style={styles.delete}>delete</Text>
-      //           //     </View>
-      //           // </TouchableOpacity>
-      //           <MenuProvider >
-      //           <Menu >
-      //             <MenuTrigger   style={styles.delete} text='Delete' />
-      //             <MenuOptions customStyles={optionsStyles} >
-      //               <MenuOption  onSelect={()=>deleteaddress(item.id)}>
-      //                 <Text  style={{color: 'red'}}>Confrim Delete</Text>
-      //               </MenuOption>
-      //             </MenuOptions>
-      //           </Menu>
-      //           </MenuProvider>
-                 
-      //           ):(
-      //             <Text></Text>
-      //           )}
-             
-      //         </View>
-      //       )}
-            
-      //     />
-         
-      //     </ScrollView>
-    //     </View>
-       
-    //   )}
-    //       <View style={styles.bottomView}>
-        // <TouchableOpacity onPress={()=>navigation.navigate('LocationView')}>
-        // <Text style={styles.textStyle}>Add New Address</Text>
-        // </TouchableOpacity>
-     
-    //   </View>
-    // </View>
     <View style={{ flex: 1, }}>
        <View style={{backgroundColor:'white',flexDirection:'row',height:70,}}>
       <Icon name="arrow-back-ios" size={24} onPress={navigation.goBack} style={{left:20,top:25}} />
@@ -240,7 +179,7 @@ const getaddress =() =>{
                 <Menu >
                   <MenuTrigger   style={styles.delete} text='Delete' />
                   <MenuOptions customStyles={optionsStyles} >
-                    <MenuOption  onSelect={()=>{deleteaddress(item.id),getaddress()}}>
+                    <MenuOption  onSelect={()=>{deleteaddress(item.id),getaddress(),setLoading(true)}}>
                       <Text  style={{color: 'red'}}>Confrim Delete</Text>
                     </MenuOption>
                   </MenuOptions>
@@ -312,10 +251,11 @@ const styles = StyleSheet.create({
          padding:10,
          borderRadius:5,
          width:70,
-         right:16,
+         left:10,
+        //  right:16,
          paddingLeft:14,
          textAlign:'center',
-         alignSelf:'flex-end'
+        //  alignSelf:'flex-end'
      }
       
       });
